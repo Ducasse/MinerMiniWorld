@@ -902,7 +902,7 @@ MinerWorld >> tileNumber [
 { #category : 'ui process' }
 MinerWorld >> uiDo: aBlock [
 	"Changes to the element tree must happen in the Bloc pulse process.
-	Miner scripts usually run in the Morphic UI process (a playground or a miner controller),
+	Miner scripts run in another process (a miner controller or a playground),
 	so defer aBlock to the space and wait until it is applied"
 
 	| aSpace |

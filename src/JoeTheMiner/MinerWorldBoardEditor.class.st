@@ -21,7 +21,7 @@ MinerWorldBoardEditor >> createBar [
 	bar := self newBar.
 	bar addChild: (self createButtonLabel: 'Save Area' target: self actionSelector: #save).
 	bar addChild: (self createButtonLabel: 'Area Named' target: self actionSelector: #nextLevelNamed).
-	bar addChild: (self createButtonLabel: 'Pick Area' target: self actionSelector: #selectingArea).
+	bar addChild: self createAreaMenu.
 	bar addChild: (self createButtonLabel: 'Empty' target: self actionSelector: #emptyArea).
 	bar addChild: (self createButtonLabel: 'Tile Pane' target: self actionSelector: #openTilePane).
 	^ bar
@@ -66,11 +66,9 @@ MinerWorldBoardEditor >> save [
 
 	| description |
 	botWorld isValid ifFalse: [
-		^ self inMorphicDo: [ UIManager default inform: 'There is too much or no starting place (red tile). There should be only one!' ] ].
+		^ MinerRequest inform: 'There is too much or no starting place (red tile). There should be only one!' ].
 	description := botWorld currentLevelDescription.
-	self inMorphicDo: [
-			| res |
-			res := UIManager default request: 'Give a name for the level' initialAnswer: 'first'.
+	MinerRequest request: 'Give a name for the level' initialAnswer: 'first' do: [ :res |
 			res isEmptyOrNil ifFalse: [
 				MinerWorld class compile: 'area' , res , String cr , String cr , String tab , '^ ''' , description , '''' classified: 'areas' ] ]
 ]

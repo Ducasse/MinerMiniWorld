@@ -1,7 +1,7 @@
 "
 I am Joe the Miner, a small robot living in a MinerWorld. I can move, turn, sense my surroundings, pick and drop diamonds and paint tiles.
 
-When I live in an opened space, scripts that drive me usually run in the Morphic UI process, so every visual change goes through MinerWorld>>#uiDo:, and #go waits StepDelay milliseconds so that the moves can be seen.
+When I live in an opened space, the scripts that drive me run outside of the Bloc pulse process (in a miner controller or a playground), so every visual change goes through MinerWorld>>#uiDo:, and #go waits StepDelay milliseconds so that the moves can be seen.
 "
 Class {
 	#name : 'Miner',
@@ -109,7 +109,7 @@ Miner >> autoName [
 	self name: 'b' , self class botCounter asString
 ]
 
-{ #category : 'morph' }
+{ #category : 'element' }
 Miner >> balloonText [
 
 	^ String streamContents: [ :stream |
@@ -191,7 +191,7 @@ Miner >> decreaseDiamondNumber [
 	self loadDiams: self diamNumber - 1
 ]
 
-{ #category : 'morph' }
+{ #category : 'element' }
 Miner >> delete [
 
 	self inUIDo: [ self removeFromParent ].

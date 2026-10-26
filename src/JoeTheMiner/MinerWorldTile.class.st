@@ -70,13 +70,12 @@ MinerWorldTile >> clickEvent: evt [
 
 { #category : 'initialization' }
 MinerWorldTile >> color: aColor borderColor: anotherColor [
-	"Bloc version of the Morphic color: / borderColor: pair"
 
 	self background: aColor.
 	self border: (BlBorder paint: anotherColor width: 2)
 ]
 
-{ #category : 'morph' }
+{ #category : 'element' }
 MinerWorldTile >> delete [
 
 	self removeFromParent.
