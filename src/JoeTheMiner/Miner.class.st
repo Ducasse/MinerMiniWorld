@@ -18,10 +18,6 @@ Class {
 		'eye'
 	],
 	#classVars : [
-		'BumpSoundOn',
-		'DropSoundOn',
-		'MotorSoundOn',
-		'PickSoundOn',
 		'StepDelay'
 	],
 	#classInstVars : [
@@ -59,8 +55,7 @@ Miner class >> initialize [
 
 	colorIndex := 0.
 	colorTable := Color wheel: self maxColor saturation: 0.6 brightness: 1.
-	StepDelay := 150.
-	self noisy
+	StepDelay := 150
 ]
 
 { #category : 'class initialization' }
@@ -92,74 +87,6 @@ Miner class >> nextColor [
 	colorTable ifNil: [ self initialize ].
 	colorIndex := colorIndex + 1 \\ self maxColor + 1.
 	^ colorTable at: colorIndex
-]
-
-{ #category : 'class initialization' }
-Miner class >> noisy [
-	"all of the robots will make noise"
-
-	self noisyMotor.
-	self noisyDrop.
-	self noisyPick.
-	self noisyBump
-]
-
-{ #category : 'class initialization' }
-Miner class >> noisyBump [
-
-	BumpSoundOn := true
-]
-
-{ #category : 'class initialization' }
-Miner class >> noisyDrop [
-
-	DropSoundOn := true
-]
-
-{ #category : 'class initialization' }
-Miner class >> noisyMotor [
-
-	MotorSoundOn := true
-]
-
-{ #category : 'class initialization' }
-Miner class >> noisyPick [
-
-	PickSoundOn := true
-]
-
-{ #category : 'class initialization' }
-Miner class >> silent [
-	"None of the robot will make noise"
-
-	self silentMotor.
-	self silentDrop.
-	self silentPick.
-	self silentBump
-]
-
-{ #category : 'class initialization' }
-Miner class >> silentBump [
-
-	BumpSoundOn := false
-]
-
-{ #category : 'class initialization' }
-Miner class >> silentDrop [
-
-	DropSoundOn := false
-]
-
-{ #category : 'class initialization' }
-Miner class >> silentMotor [
-
-	MotorSoundOn := false
-]
-
-{ #category : 'class initialization' }
-Miner class >> silentPick [
-
-	PickSoundOn := false
 ]
 
 { #category : 'speed' }
@@ -222,12 +149,6 @@ Miner >> botWorldPosition [
 Miner >> botWorldPosition: aPoint [
 
 	botWorldPosition := aPoint
-]
-
-{ #category : 'sounds' }
-Miner >> bumpSound [
-
-	BumpSoundOn ifTrue: [ self playSound: 'scratch' ]
 ]
 
 { #category : 'diamonds' }
@@ -302,20 +223,11 @@ Miner >> drop [
 
 	self canDrop
 		ifTrue: [
-				self dropSound.
 				self decreaseDiamondNumber.
 				self inUIDo: [
 						botWorld addDiamondAt: botWorldPosition.
 						botWorld botsUpFront ] ]
-		ifFalse: [
-				self bumpSound.
-				self error: self name printString , ' does not have diamond to drop' ]
-]
-
-{ #category : 'sounds' }
-Miner >> dropSound [
-
-	DropSoundOn ifTrue: [ self playSound: 'scritch' ]
+		ifFalse: [ self error: self name printString , ' does not have diamond to drop' ]
 ]
 
 { #category : 'operations' }
@@ -338,16 +250,11 @@ Miner >> go [
 
 	| nextPosition |
 	nextPosition := self nextPosition.
-	(self isNextMoveInWorld: nextPosition) ifFalse: [
-			self bumpSound.
-			^ self error: 'Alert bot out of limits!' ].
+	(self isNextMoveInWorld: nextPosition) ifFalse: [ ^ self error: 'Alert bot out of limits!' ].
 	self isWallInFront
-		ifTrue: [
-				self bumpSound.
-				self error: 'Alert bot bumped into a brick!' ]
+		ifTrue: [ self error: 'Alert bot bumped into a brick!' ]
 		ifFalse: [
 				self goTo: nextPosition.
-				self motorSound.
 				botWorld pauseAfterMove ]
 ]
 
@@ -542,12 +449,6 @@ Miner >> loadDiams: anInteger [
 	self triggerEvent: #diamNumber:
 ]
 
-{ #category : 'sounds' }
-Miner >> motorSound [
-
-	MotorSoundOn ifTrue: [ self playSound: 'motor' ]
-]
-
 { #category : 'accessing' }
 Miner >> name [
 
@@ -638,27 +539,9 @@ Miner >> pick [
 
 	self canPick
 		ifTrue: [
-				self pickSound.
 				self increaseDiamondNumber.
 				self inUIDo: [ botWorld removeDiamondAt: botWorldPosition ] ]
-		ifFalse: [
-				self bumpSound.
-				self error: 'Alert is no diamond to pick up!' ]
-]
-
-{ #category : 'sounds' }
-Miner >> pickSound [
-
-	PickSoundOn ifTrue: [ self playSound: 'clink' ]
-]
-
-{ #category : 'sounds' }
-Miner >> playSound: aString [
-	"the Sound package is not part of a standard Pharo image, play only when it is loaded"
-
-	Smalltalk
-		at: #SampledSound
-		ifPresent: [ :soundClass | (soundClass soundNamed: aString) ifNotNil: [ :s | s playAndWaitUntilDone ] ]
+		ifFalse: [ self error: 'Alert is no diamond to pick up!' ]
 ]
 
 { #category : 'operations' }

@@ -14,7 +14,6 @@ Class {
 MinerTest >> setUp [
 
 	super setUp.
-	Miner silent.
 	world := MinerWorld new installAreaNamed: #oneForTest.
 	bot := Miner new.
 	world addMiner: bot
